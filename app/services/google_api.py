@@ -22,11 +22,7 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> tuple[str, str]:
         service.spreadsheets.create(json=spreadsheet_body)
     )
     spreadsheet_id = response['spreadsheetId']
-    spreadsheet_url = (
-        f'https://docs.google.com/spreadsheets/d/'
-        f'{spreadsheet_id}'
-    )
-    return spreadsheet_id, spreadsheet_url
+    return spreadsheet_id
 
 
 async def set_user_permissions(
