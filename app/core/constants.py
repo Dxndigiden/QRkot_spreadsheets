@@ -13,3 +13,7 @@ NOT_SET_AMOUNT_MSG = (
     'которая меньше уже внесённой!'
 )
 NOT_DELETE_USERS_MSG = 'Удаление пользователей запрещено!'
+
+TIME_FORMAT = '%Y/%m/%d %H:%M:%S'
+DAYS_IN_MONTH = 30
+DAYS_IN_YEAR = 365

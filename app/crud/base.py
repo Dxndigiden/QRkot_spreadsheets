@@ -6,7 +6,7 @@ from app import models
 
 class CRUDBase:
 
-    def __init__(self, model):
+    def __init__(self, model) -> None:
         self.model = model
 
     async def fetch_by_id(self, obj_id: int, session: AsyncSession):

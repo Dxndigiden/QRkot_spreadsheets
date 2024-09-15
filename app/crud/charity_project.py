@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import select, extract
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import models, schemas
+from app.core.constants import DAYS_IN_MONTH, DAYS_IN_YEAR
 from .base import CRUDBase
 
 
@@ -57,3 +58,39 @@ class ProjectManagementCRUD(CRUDBase):
             )
         )
         return result.scalars().first()
+
+    async def get_projects_by_completion_rate(
+        self,
+        session: AsyncSession,
+    ) -> Optional[List[dict[str, str]]]:
+        charity_projects = await session.execute(
+            select(self.model).where(
+                self.model.fully_invested
+            )
+        )
+        charity_projects = charity_projects.scalars().all()
+        list_charity_project = []
+        for project in charity_projects:
+            if project.close_date and project.create_date:
+                start_date = (
+                    extract('year', project.create_date) * DAYS_IN_YEAR +
+                    extract('month', project.create_date) * DAYS_IN_MONTH +
+                    extract('day', project.create_date)
+                )
+                end_date = (
+                    extract('year', project.close_date) * DAYS_IN_YEAR +
+                    extract('month', project.close_date) * DAYS_IN_MONTH +
+                    extract('day', project.close_date)
+                )
+                time_taken = end_date - start_date
+            else:
+                time_taken = None
+            list_charity_project.append({
+                'name': project.name,
+                'time_project': time_taken,
+                'description': project.description,
+            })
+        return sorted(list_charity_project, key=lambda i: (i['time_project']))
+
+
+charity_project_crud = ProjectManagementCRUD()

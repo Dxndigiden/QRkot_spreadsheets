@@ -10,3 +10,4 @@ from .donation import (  # noqa
     DonationListByUserOutput
 )
 from .user import UserRead, UserCreate, UserUpdate  # noqa
+from .google_api import SpreadSheetLink  # noqa
