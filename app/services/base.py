@@ -22,19 +22,19 @@ class BaseProjectService:
     async def get_all(
             self
     ) -> List[Union[models.Donation, models.CharityProject]]:
-        projects = await self.main_crud.fetch_all(self.session)
-        return projects
+        db_objects = await self.main_crud.fetch_all(self.session)
+        return db_objects
 
     async def create(
         self,
-        project_data,
+        data,
         user: Optional[models.User] = None,
     ) -> Union[models.Donation, models.CharityProject]:
         db_object = await self.main_crud.create(
-            project_data.dict(),
+            data.dict(),
             self.session
         )
-        await self._invest_in_project(db_object, project_data.full_amount)
+        await self._invest_in_project(db_object, data.full_amount)
         self.session.add(db_object)
         await self.session.commit()
         await self.session.refresh(db_object)
